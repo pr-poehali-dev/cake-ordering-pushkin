@@ -55,7 +55,7 @@ const Index = () => {
             <a href="#reviews" className="hover:text-primary transition-colors">Отзывы</a>
             <a href="#contacts" className="hover:text-primary transition-colors">Контакты</a>
           </div>
-          <Button className="hidden md:block">Заказать торт</Button>
+          <Button className="hidden md:block" onClick={() => document.getElementById('contacts')?.scrollIntoView({ behavior: 'smooth' })}>Заказать торт</Button>
         </nav>
       </header>
 
@@ -71,11 +71,11 @@ const Index = () => {
                 Каждый торт — произведение искусства, которое радует не только глаз, но и вкус!
               </p>
               <div className="flex flex-wrap gap-4">
-                <Button size="lg" className="text-lg px-8">
+                <Button size="lg" className="text-lg px-8" onClick={() => document.getElementById('contacts')?.scrollIntoView({ behavior: 'smooth' })}>
                   <Icon name="Phone" size={20} className="mr-2" />
                   Заказать сейчас
                 </Button>
-                <Button size="lg" variant="outline" className="text-lg px-8">
+                <Button size="lg" variant="outline" className="text-lg px-8" onClick={() => document.getElementById('portfolio')?.scrollIntoView({ behavior: 'smooth' })}>
                   <Icon name="Image" size={20} className="mr-2" />
                   Смотреть работы
                 </Button>
