@@ -1,0 +1,35 @@
+{
+  "tests": [
+    {
+      "name": "Успешная отправка заявки",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "name": "Иван Иванов",
+        "phone": "+7 (999) 123-45-67",
+        "email": "test@example.com",
+        "event_date": "2024-12-31",
+        "message": "Хочу заказать торт на день рождения"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "message": "Заявка успешно отправлена!"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Ошибка - нет обязательных полей",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "message": "Только сообщение"
+      },
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

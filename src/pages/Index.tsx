@@ -3,8 +3,64 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import Icon from "@/components/ui/icon";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
+  const { toast } = useToast();
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    event_date: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch('https://functions.poehali.dev/a45f84e6-aeee-4067-ad30-fcc9d52cc4f6', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast({
+          title: "Заявка отправлена!",
+          description: "Мы свяжемся с вами в ближайшее время.",
+        });
+        setFormData({
+          name: '',
+          phone: '',
+          email: '',
+          event_date: '',
+          message: ''
+        });
+      } else {
+        toast({
+          title: "Ошибка",
+          description: data.error || "Не удалось отправить заявку",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Ошибка",
+        description: "Проблема с подключением к серверу",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   const categories = [
     { name: "Детские праздники", icon: "Baby", color: "bg-[#FF6B9D]" },
     { name: "Свадьбы", icon: "Heart", color: "bg-[#9b87f5]" },
@@ -305,26 +361,54 @@ const Index = () => {
               </div>
               <Card>
                 <CardContent className="p-6">
-                  <form className="space-y-4">
+                  <form className="space-y-4" onSubmit={handleSubmit}>
                     <div>
                       <label className="text-sm font-medium mb-2 block">Ваше имя</label>
-                      <Input placeholder="Иван Иванов" />
+                      <Input 
+                        placeholder="Иван Иванов" 
+                        value={formData.name}
+                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                        required
+                      />
                     </div>
                     <div>
                       <label className="text-sm font-medium mb-2 block">Телефон</label>
-                      <Input placeholder="+7 (___) ___-__-__" />
+                      <Input 
+                        placeholder="+7 (___) ___-__-__" 
+                        value={formData.phone}
+                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Email (необязательно)</label>
+                      <Input 
+                        type="email"
+                        placeholder="example@mail.ru" 
+                        value={formData.email}
+                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      />
                     </div>
                     <div>
                       <label className="text-sm font-medium mb-2 block">Дата мероприятия</label>
-                      <Input type="date" />
+                      <Input 
+                        type="date" 
+                        value={formData.event_date}
+                        onChange={(e) => setFormData({...formData, event_date: e.target.value})}
+                      />
                     </div>
                     <div>
                       <label className="text-sm font-medium mb-2 block">Комментарий</label>
-                      <Textarea placeholder="Расскажите о вашем празднике и пожеланиях к торту" rows={4} />
+                      <Textarea 
+                        placeholder="Расскажите о вашем празднике и пожеланиях к торту" 
+                        rows={4}
+                        value={formData.message}
+                        onChange={(e) => setFormData({...formData, message: e.target.value})}
+                      />
                     </div>
-                    <Button className="w-full" size="lg">
+                    <Button className="w-full" size="lg" type="submit" disabled={isSubmitting}>
                       <Icon name="Send" size={20} className="mr-2" />
-                      Отправить заявку
+                      {isSubmitting ? 'Отправка...' : 'Отправить заявку'}
                     </Button>
                   </form>
                 </CardContent>
